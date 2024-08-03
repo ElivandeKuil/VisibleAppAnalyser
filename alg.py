@@ -304,11 +304,6 @@ def process_file(file):
         ws.append(["Insufficient data for symptom correlation analysis."])
         ws.append(["Please check the console output for more information about data issues."])
 
-
-
-    # Save the Excel file
-    wb.save('C:/Users/eliva/OneDrive/Documents/GitHub/LC/symptom_activity_analysis.xlsx')
-
     print("Analysis complete. Results saved in 'symptom_activity_analysis.xlsx'.")
 
     return wb
@@ -317,11 +312,12 @@ st.title("Excel File Processor")
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
-    result = process_file(df)
-    if result is not None:
+    result_workbook = process_file(df)  # Assuming this returns a workbook object
+    
+    if result_workbook is not None:
         buffer = BytesIO()
-        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
-            result.to_excel(writer, index=False)
+        result_workbook.save(buffer)
+        buffer.seek(0)
         
         st.download_button(
             label="Download processed file",
