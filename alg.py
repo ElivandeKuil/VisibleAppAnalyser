@@ -1,10 +1,7 @@
 import pandas as pd
 import numpy as np
-from scipy import stats
 from statsmodels.tsa.stattools import grangercausalitytests, ccf
 from statsmodels.tsa.seasonal import seasonal_decompose
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
 from openpyxl import Workbook
