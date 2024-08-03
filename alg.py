@@ -8,6 +8,7 @@ from openpyxl import Workbook
 from openpyxl.drawing.image import Image
 from openpyxl.utils.dataframe import dataframe_to_rows
 import io
+from io import BytesIO
 import warnings
 import streamlit as st
 
@@ -313,12 +314,18 @@ def process_file(file):
     return wb
 
 st.title("Excel File Processor")
-uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
+uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 if uploaded_file is not None:
-    df = pd.read_excel(uploaded_file)
+    df = pd.read_csv(uploaded_file)
     result = process_file(df)
-    st.download_button(
-        label="Download processed file",
-        data=result.to_excel(index=False),
-        file_name="processed_file.xlsx"
-    )
+    if result is not None:
+        buffer = BytesIO()
+        with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+            result.to_excel(writer, index=False)
+        
+        st.download_button(
+            label="Download processed file",
+            data=buffer.getvalue(),
+            file_name="processed_file.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
